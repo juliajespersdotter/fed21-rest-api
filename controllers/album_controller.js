@@ -1,8 +1,8 @@
 /**
- * Book Controller
+ * album Controller
  */
 
-const debug = require('debug')('books:book_controller');
+const debug = require('debug')('photos:album_controller');
 const models = require('../models');
 const {matchedData, validationResult } = require('express-validator');
 
@@ -12,12 +12,12 @@ const {matchedData, validationResult } = require('express-validator');
  * GET /
  */
 const index = async (req, res) => {
-	const all_books = await models.Book.fetchAll();
+	const all_albums = await models.Album.fetchAll();
 
 	res.send({
 		status: 'success',
 		data: {
-			books: all_books
+			albums: all_albums
 		}
 	});
 }
@@ -25,16 +25,16 @@ const index = async (req, res) => {
 /**
  * Get a specific resource
  *
- * GET /:bookId
+ * GET /:albumId
  */
 const show = async (req, res) => {
-	const book = await new models.Book({ id: req.params.bookId })
-		.fetch({ withRelated: ['author', 'users'] });
+	const album = await new models.Album({ id: req.params.albumId })
+		.fetch({ withRelated: ['photos', 'users'] });
 
 	res.send({
 		status: 'success',
 		data: {
-			book,
+			album,
 		}
 	});
 }
@@ -55,20 +55,20 @@ const store = async (req, res) => {
     const validData = matchedData(req); 
 
 	try {
-		const book = await new models.Book(validData).save();
-		debug("Created new book successfully: %O", book);
+		const album = await new models.Album(validData).save();
+		debug("Created new album successfully: %O", album);
 
 		res.send({
 			status: 'success',
 			data: {
-				book,
+				album,
 			}
 		});
 
 	} catch (error) {
 		res.status(500).send({
 			status: 'error',
-			message: 'Exception thrown in database when creating a new book.',
+			message: 'Exception thrown in database when creating a new album.',
 		});
 		throw error;
 	}
@@ -77,18 +77,18 @@ const store = async (req, res) => {
 /**
  * Update a specific resource
  *
- * POST /:bookId
+ * PUT /:albumId
  */
  const update = async (req, res) => {
-	const bookId = req.params.bookId;
+	const albumId = req.params.albumId;
 
 	// make sure user exists
-	const book = await new models.Book({ id: bookId }).fetch({ require: false });
-	if (!book) {
-		debug("Book to update was not found. %o", { id: bookId });
+	const album = await new models.Album({ id: albumId }).fetch({ require: false });
+	if (!album) {
+		debug("Album to update was not found. %o", { id: albumId });
 		res.status(404).send({
 			status: 'fail',
-			data: 'Book Not Found',
+			data: 'Album Not Found',
 		});
 		return;
 	}
@@ -103,20 +103,20 @@ const store = async (req, res) => {
     const validData = matchedData(req); 
 
 	try {
-		const updatedBook = await book.save(validData);
-		debug("Updated book successfully: %O", updatedBook);
+		const updatedAlbum = await album.save(validData);
+		debug("Updated album successfully: %O", updatedAlbum);
 
 		res.send({
 			status: 'success',
 			data: {
-				updatedBook,
+				updatedAlbum,
 			}
 		});
 
 	} catch (error) {
 		res.status(500).send({
 			status: 'error',
-			message: 'Exception thrown in database when updating a new book.',
+			message: 'Exception thrown in database when updating a new album.',
 		});
 		throw error;
 	}
@@ -125,7 +125,10 @@ const store = async (req, res) => {
 /**
  * Destroy a specific resource
  *
- * DELETE /:bookId
+ * @todo Create delete album and photo from album
+ * 
+ * DELETE /:albumId
+ * DELETE /:albumId/photos/:photoId
  */
 const destroy = (req, res) => {
 	res.status(405).send({
