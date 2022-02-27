@@ -1,11 +1,11 @@
 {
-  "name": "books",
+  "name": "n",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "cross-env DEBUG=books:* nodemon ./bin/www",
-    "debug": "cross-env DEBUG=books:* nodemon --inspect ./bin/www"
+    "dev": "cross-env DEBUG=photos:* nodemon ./bin/www",
+    "debug": "cross-env DEBUG=photos:* nodemon --inspect ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -25,5 +25,13 @@
   "main": "app.js",
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juliajespersdotter/fed21-rest-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/juliajespersdotter/fed21-rest-api/issues"
+  },
+  "homepage": "https://github.com/juliajespersdotter/fed21-rest-api#readme",
   "description": ""
 }
