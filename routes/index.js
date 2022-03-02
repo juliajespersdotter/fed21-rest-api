@@ -20,14 +20,16 @@ router.post('/register', userValidationRules.createRules, authController.registe
 // login a user and get a JWT token
 router.post('/login', authController.login);
 
+// issue a new access token
+
+router.post('/refresh', authController.refresh);
+
 // always use for routes underneath
 router.use(auth.validateJwtToken);
 
 router.use('/albums', require('./albums'));
 router.use('/photos', require('./photos'));
-router.use('/profile', auth.validateJwtToken, require('./profile'));
-// router.use('/users', require('./users'));
-
+// router.use('/profile', auth.validateJwtToken, require('./profile')); // not needed?
 
 
 module.exports = router;
