@@ -2,7 +2,8 @@
  * User Controller
  */
 
-const debug = require('debug')('photos:profile_controller');
+const debug = require('debug')('photo_album:profile_controller');
+const { User } = require('../models');
 const {matchedData, validationResult} = require('express-validator');
 const bcrypt = require('bcrypt');
 
@@ -12,12 +13,18 @@ const bcrypt = require('bcrypt');
  * GET /
  */
 const getProfile = async (req, res) => {
-	res.send({
-		status: 'success',
-		data: {
-			user: req.user,
-		}
-	});
+	 try {
+		 // create function fetchById()
+		 const user = await User.fetchById(req.user.user_id);
+		 res.send({
+			status: 'success',
+			data: {
+				user: user,
+			}
+		});
+	 } catch (error) {
+		return res.status(404).send;
+	 }
 }
 
 /**
@@ -27,6 +34,7 @@ const getProfile = async (req, res) => {
  */
 const updateProfile = async (req, res) => {
 	// Checking after errors before updating user
+
 	const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).send({ status : "fail", data: errors.array() });
@@ -34,7 +42,7 @@ const updateProfile = async (req, res) => {
     const validData = matchedData(req); 
 
 	try {
-		validData.password = await bcrypt.hash(validData.password, 10);
+		validData.password = await bcrypt.hash(validData.password, User.hashSaltRounds);
 	} catch (error) {
 		res.status(500).send({
 			status: 'error',
@@ -42,13 +50,16 @@ const updateProfile = async (req, res) => {
 		});
 	}
 
+
 	try {
-		const updatedUser = await req.user.save(validData);
+		const user = await User.fetchById(req.user.user_id);
+
+		const updatedUser = await user.save(validData);
 		debug("Updated user successfully: %O", updatedUser);
 		res.send({
 			status: 'success',
 			data: {
-				user: req.user,
+				user: updatedUser,
 			},
 		});
 	} catch (error) {
@@ -60,24 +71,32 @@ const updateProfile = async (req, res) => {
 	}
 }
 	
-
-const getBooks = async (req, res) => {
-	// get user and also eager-load the books-relation
-	// const user = await new models.User({ id: req.user.id }).fetch({withRelated: ['books']});
-
-	// "lazy load" the books-relation
-	await req.user.load('books');
+/** 
+ * Get profile's photos
+ * 
+ * GET /profile/photos
+ * 
+ */
+const getPhotos = async (req, res) => {
+	// get user with user id and eager-load the photos relation as second parameter
+	const user = await User.fetchById(req.user.user_id, { withRelated: ['photos'] });
 
 		res.status(200).send({
 			status: 'success',
 			data: {
-				books: req.user.related('books'),
+				books: user.related('photos'),
 			}
 		});
 }
 
-const addPhoto= async (req, res) => {
-	// Checking after errors before adding photo
+/** 
+ * Add book to profile
+ * 
+ * POST /profile/photos
+ * 
+*/
+const addBook = async (req, res) => {
+	// Checking after errors before adding book
 	const errors = validationResult(req);
 	if(!errors.isEmpty()){
 		return res.status(422).send({ status : "fail", data: errors.array() });
@@ -85,29 +104,29 @@ const addPhoto= async (req, res) => {
 
 	const validData = matchedData(req); 
 
-	// lazy-load photo relationship
-	await req.user.load('photos');
+	// get the user's book by id 
+	const user = await User.fetchById(req.user.user_id, { withRelated: ['books'] });
 
-	// get the user's photos
-	const photos = req.user.related('photos');
+	// get the user's books
+	const books = user.related('books');
 
-	const  existing_photo = photos.find(photo => photo.id == validData.photo_id)
+	const  existing_book = books.find(book => book.id == validData.book_id)
 
 	// if the book exists, bail
-	if (existing_photo) {
+	if (existing_book) {
 		return res.send({
 			status: 'fail',
-			data: "Photo already exists",
+			data: "Book already exists",
 		});
 	}
 
 	try {
-		const result = await req.user.photos().attach(validData.photo_id);
+		const result = await user.books().attach(validData.book_id);
 
-		if(result === photos){
-			debug("Cannot add photo already in list.")
+		if(result === books){
+			debug("Cannot add book already in list.")
 		}
-		debug("Added photo successfully: %O", res);
+		debug("Added book successfully: %O", res);
 		res.send({
 			status: 'success',
 			data: {
@@ -117,16 +136,18 @@ const addPhoto= async (req, res) => {
 	} catch (error) {
 		res.status(500).send({
 			status: 'error',
-			message: "Exception thrown when attempting to add photo",
+			message: "Exception thrown when attempting to add book",
 		});
 		throw error;
 	}
 }
+
+// Validatefunction
 
 
 module.exports = {
 	getProfile,
 	updateProfile,
 	getBooks,
-	addPhoto
+	addBook
 }

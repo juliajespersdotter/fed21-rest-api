@@ -2,7 +2,7 @@
  * Authentication Middleware
  */
 
-const debug = require('debug')('books:auth');
+const debug = require('debug')('photo_album:auth');
 const bcrypt = require('bcrypt');
 
 const { User } = require('../models');

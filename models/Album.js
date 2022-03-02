@@ -12,5 +12,10 @@ module.exports = (bookshelf) => {
 		photos() {
 			return this.belongsToMany('Photo');
 		}
+	}, {
+		async fetchById(id, fetchOptions = {}) {
+			// fetch user with parameter id
+			return await new this({ id }).fetch(fetchOptions);
+		},
 	});
 }
