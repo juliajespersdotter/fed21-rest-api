@@ -1,0 +1,25 @@
+photo_controller 
+    GET /photos -- 🥳
+    GET /photos/:photoId -- 🥳
+    POST /photos
+    PUT /photos/:photoId
+    DELETE /photos/:photoId
+
+
+album_controller
+    GET /albums -- 🥳
+    GET /albums/:albumId -- 🧐
+    POST /albums
+    PUT /albums/:albumId
+    POST /albums/:albumId/photos (add 1 or multiple photos)
+    DELETE /albums/:albumId/photos/:photoId
+    DELETE /albums/:albumId
+
+
+auth_controller 🤩
+    POST /login -- 🥳
+    POST /register -- 🥳
+    POST /refresh -- 🥳
+
+
+profile_controller (?)

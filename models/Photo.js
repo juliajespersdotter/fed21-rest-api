@@ -2,8 +2,10 @@
  * Photo model
  */
 
+const { Photo } = require(".");
+
 module.exports = (bookshelf) => {
-	return bookshelf.model('Photo', {
+	return bookshelf.model.extend('Photo', {
 		tableName: 'photos',
 		albums() {
 			return this.belongsToMany('Album');

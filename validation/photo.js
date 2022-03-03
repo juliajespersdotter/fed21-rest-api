@@ -3,18 +3,17 @@
  */
 
  const { body } = require('express-validator');
- const currentYear = (new Date).getFullYear();
 
  const createRules = [
-     body('first_name').exists().isLength( { min: 2 }),
-     body('last_name').exists().isLength({ min: 2 }),
-     body('birthyear').exists().isInt({ min: 1700 , max: currentYear }),
+     body('title').exists().isLength( { min: 3 }),
+     body('url').exists().isLength({ min: 2 }),
+     body('comment').exists().isLength({ min: 3 }),
  ];
  
  const updateRules = [
-     body('first_name').optional().isLength({ min: 2 }),
-     body('last_name').optional().isLength({ min: 2 }),
-     body('birthyear').optional().isInt({ min: 1700, max: currentYear}),
+     body('title').optional().isLength({ min: 2 }),
+     body('url').optional().isLength({ min: 2 }),
+     body('comment').optional().isLength({ min: 3}),
  ];
  
  module.exports = {

@@ -78,20 +78,17 @@
         // attach relation between new album and user
         const result = await user.albums().attach(validData.album_id);
 
-        if(result === albums) {
-            debug("Cannot add album already in list.")
-        }
         debug("Added album successfully: %o", res);
         res.send({
             status: 'success',
             data: {
-                album,
+                result,
             },
         });
     } catch (error) {
         res.status(500).send({
             status: 'error',
-            message: 'Exception thrown when attempting to add an album.'
+            message: 'Exception thrown when attempting to add a photo.'
         });
         throw error;
     

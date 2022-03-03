@@ -34,8 +34,16 @@ const jwt = require('jsonwebtoken');
         name: user.get('first_name') + '.' + user.get('last_name'),    
     }
 
-    // sign payload and get access-token
-    var access_token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
+     // sign payload and get access token
+    const access_token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { 
+        expiresIn: process.env.ACCESS_TOKEN_LIFETIME || '1h',
+    });
+
+    // sign payload and get refresh token
+    const refresh_token = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: process.env.REFRESH_TOKEN_LIFETIME || '1w',
+    });
+
 
     // respond with the access-token 
     return res.send({
@@ -43,6 +51,7 @@ const jwt = require('jsonwebtoken');
         data: {
             // here be `access_token`
             access_token,
+            refresh_token
         }
     })
 
