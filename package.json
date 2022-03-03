@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "cross-env DEBUG=photos:* nodemon ./bin/www",
-    "debug": "cross-env DEBUG=photos:* nodemon --inspect ./bin/www"
+    "dev": "cross-env DEBUG=photo_album:* nodemon ./bin/www",
+    "debug": "cross-env DEBUG=photo_album:* nodemon --inspect ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -15,6 +15,7 @@
     "dotenv": "^16.0.0",
     "express": "~4.16.1",
     "express-validator": "^6.14.0",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "mysql": "^2.18.1"
   },

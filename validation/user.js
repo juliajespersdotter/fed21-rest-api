@@ -6,10 +6,10 @@ const { body } = require('express-validator');
 const models = require('../models');
 
 const createRules = [
-    body('username').exists().isLength( { min: 3 }).custom(async value => { // custom rule
-        const user = await new models.User({ username : value }).fetch({ require : false});
+    body('email').exists().isLength( { min: 3 }).custom(async value => { // custom rule
+        const user = await new models.User({ email : value }).fetch({ require : false});
         if (user) {
-            return Promise.reject("Username already exists.");  // duplicate usernames not allowed
+            return Promise.reject("Email already exists.");  // duplicate usernames not allowed
         }
 
         return Promise.resolve();

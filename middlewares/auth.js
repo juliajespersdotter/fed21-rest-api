@@ -3,6 +3,7 @@
  */
 
 const debug = require('debug')('photo_album:auth');
+const jwt = require('jsonwebtoken');
 /**
  * Validate JWT token
  */

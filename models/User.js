@@ -2,17 +2,22 @@
  * User model
  */
 
+const bcrypt = require('bcrypt');
+
 module.exports = (bookshelf) => {
 	return bookshelf.model('User', {
-		tableName: 'user',
+		tableName: 'users',
+		photos() {
+			return this.hasMany('Photo');
+		},
 		albums() {
-			return this.belongsToMany('Album');
+			return this.hasMany('Album');
 		}
 	}, {
-		async login(username, password) {
+		async login(email, password) {
 
 			// check if a user with this username and password exists
-			const user = await new this({ username }).fetch({ require: false });
+			const user = await new this({ email }).fetch({ require: false });
 			if(!user) {
 				return false;
 			}

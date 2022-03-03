@@ -4,18 +4,18 @@ const photoController = require('../controllers/photo_controller');
 // const validAuthor = require('../validation/author');
 
 /* Get all resources */
-router.get('/', photoController.index);
+// router.get('/', photoController.index);
 
 /* Get a specific resource */
-router.get('/:photoId', photoController.show);
+// router.get('/:photoId', photoController.show);
 
 /* Store a new resource */
-router.post('/',  photoController.store);
+// router.post('/',  photoController.store);
 
 /* Update a specific resource */
-router.put('/:photoId', photoController.update);
+// router.put('/:photoId', photoController.update);
 
 /* Destroy a specific resource */
-router.delete('/:photoId', photoController.destroy);
+// router.delete('/:photoId', photoController.destroy);
 
 module.exports = router;

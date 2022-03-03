@@ -8,6 +8,9 @@ module.exports = (bookshelf) => {
 		albums() {
 			return this.hasMany('Album');
 		},
+		user() {
+			return this.belongsTo('User');
+		}
 	}, {
 		async fetchById(id, fetchOptions = {}) {
 			// fetch user with parameter id
