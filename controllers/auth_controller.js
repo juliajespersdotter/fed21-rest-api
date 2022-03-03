@@ -16,7 +16,7 @@ const jwt = require('jsonwebtoken');
 
  const login = async (req, res) => {
     // destructure username and password from request body
-    const { email, password } = req.body 
+    const { email, password } = req.body;
 
     // login the user
     const user = await models.User.login(email, password);
@@ -119,11 +119,17 @@ const register = async (req, res) => {
             expiresIn: process.env.ACCESS_TOKEN_LIFETIME || '1h',
         });
 
+        // sign payload and get refresh token
+        const refresh_token = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+            expiresIn: process.env.REFRESH_TOKEN_LIFETIME || '1w',
+        });
+
         // send the access token to the client
         return res.send ({
             status: 'success',
             data: {
                 access_token,
+                refresh_token
             }
         });
 

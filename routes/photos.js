@@ -4,7 +4,7 @@ const photoController = require('../controllers/photo_controller');
 // const validAuthor = require('../validation/author');
 
 /* Get all resources */
-// router.get('/', photoController.index);
+router.get('/', photoController.index);
 
 /* Get a specific resource */
 // router.get('/:photoId', photoController.show);

@@ -2,7 +2,7 @@
  * Album Controller
  */
 
- const debug = require('debug')('books:author_controller');
+ const debug = require('debug')('photo_album:album_controller');
  const models = require('../models');
  const {matchedData, validationResult } = require('express-validator');
  
@@ -30,12 +30,27 @@
   */
  const show = async (req, res) => {
      // get album with album id and eager-load the user relation as second parameter
-    const album = await models.Album.fetchById(req.params.bookId, { withRelated: ['user'] });
- 
+    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
+    const albums = user.related('albums');
+    // const album = await models.Album.fetchById(req.params.albumId, {withRelated: ['photos', 'user']});
+    // const userAlbum = user.related('albums');cd ..
+    // const photos = album.related('photos');
+    // const albums = user.related('albums');
+    const album = albums.find(album => album.id == req.params.albumId);
+
+    if(!album){
+        return res.status(404).send({
+            status: 'fail',
+            message: 'Album not found'
+        });
+    }
+    // const result = album.load(['photos']);
+    // const photosalbum = userAlbum.related('photos').fetchAll();
+
      res.send({
          status: 'success',
          data: {
-             album,
+             album: album,
          }
      });
  }
@@ -46,50 +61,59 @@
   * POST /
   */
  const store = async (req, res) => {
-     // check for validation errors
-     const errors = validationResult(req);
-     if(!errors.isEmpty()){
-         return res.status(422).send({ status : "fail", data: errors.array() });
-     }
- 
-     // get only the valid data from the request
-     const validData = matchedData(req); 
- 
-     try {
-         const album = await new models.Album(validData).save();
-         debug("Created new album successfully: %O", album);
- 
-         res.send({
-             status: 'success',
-             data: {
-                 author,
-             }
-         });
- 
-     } catch (error) {
-         res.status(500).send({
-             status: 'error',
-             message: 'Exception thrown in database when creating a new author.',
-         });
-         throw error;
-     }
+    // check for validation errors
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).send({ status : "fail", data: errors.array() });
+    }
+
+    // get only the valid data from the request
+    const validData = matchedData(req); 
+
+    // before attaching relation to user, check so it does not already exist
+    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums']});
+    
+    try {    
+
+        // attach relation between new album and user
+        const result = await user.albums().attach(validData.album_id);
+
+        if(result === albums) {
+            debug("Cannot add album already in list.")
+        }
+        debug("Added album successfully: %o", res);
+        res.send({
+            status: 'success',
+            data: {
+                album,
+            },
+        });
+    } catch (error) {
+        res.status(500).send({
+            status: 'error',
+            message: 'Exception thrown when attempting to add an album.'
+        });
+        throw error;
+    
+    }
  }
+
  
  /**
   * Update a specific resource
   *
-  * POST /:authorId
+  * POST /:albumId
   */
  const update = async (req, res) => {
-     const authorId = req.params.authorId;
+     const albumId = req.params.albumId;
  
      // make sure user exists
-     const author = await new models.Author({ id: authorId }).fetch({ require: false });
-     if (!author) {
-         debug("Author to update was not found. %o", { id: authorId });
+     const album = await new models.Album({ id: albumId }).fetch({ require: false });
+     if (!album) {
+         debug("Album to update was not found. %o", { id: albumId });
          res.status(404).send({
              status: 'fail',
-             data: 'Author Not Found',
+             data: 'Album Not Found',
          });
          return;
      }
@@ -104,20 +128,20 @@
      const validData = matchedData(req); 
  
      try {
-         const updatedAuthor = await author.save(validData);
-         debug("Updated author successfully: %O", updatedAuthor);
+         const updatedAlbum = await album.save(validData);
+         debug("Updated author successfully: %O", updatedAlbum);
  
          res.send({
              status: 'success',
              data: {
-                 updatedAuthor,
+                 updatedAlbum,
              }
          });
  
      } catch (error) {
          res.status(500).send({
              status: 'error',
-             message: 'Exception thrown in database when updating a new author.',
+             message: 'Exception thrown in database when updating a new album.',
          });
          throw error;
      }
@@ -126,7 +150,7 @@
  /**
   * Destroy a specific resource
   *
-  * DELETE /:authorId
+  * DELETE /:albumId
   */
  const destroy = (req, res) => {
      res.status(405).send({
