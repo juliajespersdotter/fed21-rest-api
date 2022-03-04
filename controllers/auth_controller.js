@@ -80,6 +80,7 @@ const register = async (req, res) => {
             status: 'error',
             message: 'Exception thrown when hashing the password.',
         });
+        throw error;
     }
 
     try {
@@ -87,7 +88,7 @@ const register = async (req, res) => {
         const user = await new models.User(validData).save();
         debug("Created new user successfully: %O", user);
 
-        // return only data that can be possible, not password
+        // return only data that can be visible, not password
         res.send({
             status: 'success',
             data: {
