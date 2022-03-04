@@ -20,7 +20,7 @@ router.post('/login', authController.login);
 router.post('/refresh', authController.refresh);
 
 // always use for routes underneath
-router.use(auth.validateJwtToken);
+// router.use(auth.validateJwtToken);
 
 router.use('/albums', require('./albums'));
 router.use('/photos', require('./photos'));

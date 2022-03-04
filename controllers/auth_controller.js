@@ -49,9 +49,9 @@ const jwt = require('jsonwebtoken');
     return res.send({
         status: 'success',
         data: {
-            // here be `access_token`
             access_token,
-            refresh_token
+            refresh_token,
+            user: user // user logged in info
         }
     })
 

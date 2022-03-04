@@ -1,14 +1,14 @@
 photo_controller 
     GET /photos -- 🥳
     GET /photos/:photoId -- 🥳
-    POST /photos
+    POST /photos 🥳
     PUT /photos/:photoId
     DELETE /photos/:photoId
 
 
 album_controller
     GET /albums -- 🥳
-    GET /albums/:albumId -- 🧐
+    GET /albums/:albumId -- 🥳
     POST /albums -- 🥳
     PUT /albums/:albumId
     POST /albums/:albumId/photos (add 1 or multiple photos)
