@@ -29,14 +29,10 @@
   * GET /:albumId
   */
  const show = async (req, res) => {
-     // get album with album id and eager-load the user relation as second parameter
-    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums', 'photos'] });
-    const albums = user.related('albums', 'photos');
-    // const album = await models.Album.fetchById(req.params.albumId, {withRelated: ['photos', 'user']});
-    // const userAlbum = user.related('albums');cd ..
-    // const photos = album.related('photos');
-    // const albums = user.related('albums');
-    const album = albums.find(album => album.id == req.params.albumId);
+     // get user model to check that the album belongs to them
+    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
+    const userAlbums = user.related('albums');
+    const album = userAlbums.find(album => album.id == req.params.albumId);
 
     if(!album){
         return res.status(404).send({
@@ -44,14 +40,12 @@
             message: 'Album not found'
         });
     }
-    // const result = album.load(['photos']);
-    // const photosalbum = userAlbum.related('photos').fetchAll();
+    const thisAlbum = await models.Album.fetchById(req.params.albumId, {withRelated: ['photos']});
 
      res.send({
          status: 'success',
-         data: {
-             album: album,
-         }
+         data: 
+            thisAlbum,
      });
  }
  

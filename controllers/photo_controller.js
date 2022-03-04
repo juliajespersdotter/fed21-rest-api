@@ -62,24 +62,17 @@ const store = async (req, res) => {
     // get only the valid data from the request
     const validData = matchedData(req); 
 
-    
-    try {    
-        // before attaching relation to user, check so it does not already exist
-        const user = await models.User.fetchById(req.user.user_id, { withRelated: ['photos']});
+    validData.user_id = req.user.user_id;
+
+    try {
+        // save new album in album table
         const photo = await new models.Photo(validData).save();
-        const photos = user.related('photos');
-        
-
-        // attach relation between new album and user
-        const result = await user.photos().attach(validData.photo_id);
-
-        debug("Added photo successfully: %o", res);
+        debug('Created new photo successfully: %O', photo);
         res.send({
             status: 'success',
-            data: {
-                result: result,
-            },
-        });
+            data: 
+                photo,
+            });
     } catch (error) {
         res.status(500).send({
             status: 'error',

@@ -9,11 +9,6 @@ router.get('/', (req, res, next) => {
 	res.send({ success: true, data: { msg: 'we are up and running!' }});
 });
 
-/**
- * Add jwt token validate
- * 
- */
-
 // register a new user
 router.post('/register', userValidationRules.createRules, authController.register);
 
