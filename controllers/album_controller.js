@@ -95,10 +95,15 @@
   */
  const update = async (req, res) => {
      const albumId = req.params.albumId;
- 
-     // make sure user exists
+    
+     const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
+     const userAlbums = user.related('albums');
+     const userAlbum = userAlbums.find(album => album.id == req.params.albumId);
+
+
+    // check so that the album exists in user list and album list
      const album = await new models.Album({ id: albumId }).fetch({ require: false });
-     if (!album) {
+     if (!album || !userAlbum) {
          debug("Album to update was not found. %o", { id: albumId });
          res.status(404).send({
              status: 'fail',
@@ -115,16 +120,16 @@
  
      // get only the valid data from the request
      const validData = matchedData(req); 
+     validData.user_id = req.user.user_id;
  
      try {
          const updatedAlbum = await album.save(validData);
-         debug("Updated author successfully: %O", updatedAlbum);
+         debug("Updated album successfully: %O", updatedAlbum);
  
          res.send({
              status: 'success',
-             data: {
+             data: 
                  updatedAlbum,
-             }
          });
  
      } catch (error) {

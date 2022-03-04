@@ -83,10 +83,64 @@ const store = async (req, res) => {
     }
  }
 
+ /**
+  * Update a specific resource
+  *
+  * POST /:photoId
+  */
+  const update = async (req, res) => {
+    const photoId = req.params.photoId;
+
+    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['photos'] });
+    const userPhotos = user.related('photos');
+    const userPhoto = userPhotos.find(photo => photo.id == req.params.photoId);
+
+    // make sure user exists
+    const photo = await models.Photo.fetchById(req.params.photoId);
+    if (!photo || !userPhoto) {
+        debug("Photo to update was not found. %o", { id: photoId });
+        res.status(404).send({
+            status: 'fail',
+            data: 'Photo Not Found',
+        });
+        return;
+    }
+
+    // check for validation errors
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).send({ status : "fail", data: errors.array() });
+    }
+
+    // get only the valid data from the request
+    const validData = matchedData(req); 
+    validData.user_id = req.user.user_id;
+
+    try {
+        const updatedPhoto = await photo.save(validData);
+        debug("Updated photo successfully: %O", updatedPhoto);
+
+        res.send({
+            status: 'success',
+            data: 
+                updatedPhoto,
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            status: 'error',
+            message: 'Exception thrown in database when updating a new photo.',
+        });
+        throw error;
+    }
+}
+
+
 
 
 module.exports = {
     index,
     show,
-    store
+    store,
+    update
 }
