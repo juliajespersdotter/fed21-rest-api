@@ -30,8 +30,8 @@
   */
  const show = async (req, res) => {
      // get album with album id and eager-load the user relation as second parameter
-    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
-    const albums = user.related('albums');
+    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums', 'photos'] });
+    const albums = user.related('albums', 'photos');
     // const album = await models.Album.fetchById(req.params.albumId, {withRelated: ['photos', 'user']});
     // const userAlbum = user.related('albums');cd ..
     // const photos = album.related('photos');
@@ -70,21 +70,19 @@
     // get only the valid data from the request
     const validData = matchedData(req); 
 
-    // before attaching relation to user, check so it does not already exist
-    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums']});
-    
-    try {    
+    validData.user_id = req.user.user_id;
 
-        // attach relation between new album and user
-        const result = await user.albums().attach(validData.album_id);
+    try {
+        // save new album in album table
+        const album = await new models.Album(validData).save();
+        debug('Created new album successfully: %O', album);
 
         debug("Added album successfully: %o", res);
         res.send({
             status: 'success',
-            data: {
-                result,
-            },
-        });
+            data: 
+                album,
+            });
     } catch (error) {
         res.status(500).send({
             status: 'error',

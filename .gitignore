@@ -1,6 +1,8 @@
 /00-sourcefiles/
 /**/node_modules/
 *-nogit
+npm-debug.log
 /**/*.env
+.DS_Store
 
 /03-db/uploads/

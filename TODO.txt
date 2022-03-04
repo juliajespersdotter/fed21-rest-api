@@ -9,7 +9,7 @@ photo_controller
 album_controller
     GET /albums -- 🥳
     GET /albums/:albumId -- 🧐
-    POST /albums
+    POST /albums -- 🥳
     PUT /albums/:albumId
     POST /albums/:albumId/photos (add 1 or multiple photos)
     DELETE /albums/:albumId/photos/:photoId
