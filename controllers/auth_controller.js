@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 /** 
- * Login a user
+ * Login user
  * 
  * POST /login
  */
@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
     // destructure username and password from request body
     const { email, password } = req.body;
 
-    // login the user
+    // login user
     const user = await models.User.login(email, password);
     if(!user) {
         return res.status(401).send({
@@ -27,7 +27,7 @@ const jwt = require('jsonwebtoken');
         });
     }
 
-    // construct jwt payload
+    // jwt payload
     const payload = {
         sub: user.get('email'),
         user_id: user.get('id'),
@@ -44,14 +44,11 @@ const jwt = require('jsonwebtoken');
         expiresIn: process.env.REFRESH_TOKEN_LIFETIME || '1w',
     });
 
-
-    // respond with the access-token 
     return res.send({
         status: 'success',
         data: {
             access_token,
             refresh_token,
-            user: user // user logged in info
         }
     })
 
@@ -66,16 +63,16 @@ const jwt = require('jsonwebtoken');
  */
 
 const register = async (req, res) => {
-    // check for validation errors
+    // before creating new user, validate data
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).send({ status : "fail", data: errors.array() });
     }
 
-    // get only the valid data from the request
+    // get valid data
     const validData = matchedData(req); 
 
-    // Replace the password with a hashed password
+    // hash password
     try {
         validData.password = await bcrypt.hash(validData.password, 10);
     } catch (error) {
@@ -86,13 +83,17 @@ const register = async (req, res) => {
     }
 
     try {
+        // save valid data 
         const user = await new models.User(validData).save();
         debug("Created new user successfully: %O", user);
 
+        // return only data that can be possible, not password
         res.send({
             status: 'success',
             data: {
-                user,
+                email: validData.email,
+                first_name: validData.first_name,
+                last_name: validData.last_name
             },
         });
 
@@ -113,27 +114,23 @@ const register = async (req, res) => {
  */
 
  const refresh = (req, res) => {
-    // validate the refresh token (check signature and expiry date)
     try {
         // verify token using the refresh token secret
         const payload = jwt.verify(req.body.token, process.env.REFRESH_TOKEN_SECRET);
 
-        // construct payload
-        // remove `iat` and `exp` from refresh token payload
         delete payload.iat;
         delete payload.exp;
 
-        // sign payload and get access token
+        // sign and get access token
         const access_token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { 
             expiresIn: process.env.ACCESS_TOKEN_LIFETIME || '1h',
         });
 
-        // sign payload and get refresh token
+        // sign and get refresh token
         const refresh_token = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
             expiresIn: process.env.REFRESH_TOKEN_LIFETIME || '1w',
         });
 
-        // send the access token to the client
         return res.send ({
             status: 'success',
             data: {

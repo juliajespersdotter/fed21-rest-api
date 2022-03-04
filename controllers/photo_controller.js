@@ -13,7 +13,7 @@
   * GET /
   */
   const index = async (req, res) => {
-    // get user with user id and eager-load the photos relation as second parameter
+    // fetch user with related photos
    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['photos'] });
 
    res.status(200).send({
@@ -30,7 +30,7 @@
   * GET /:photoId
   */
  const show = async (req, res) => {
-    // get user with user id and eager-load the photo relation as second parameter
+    // fetch user with related photos
    const user = await models.User.fetchById(req.user.user_id, { withRelated: ['photos'] });
    const photos = user.related('photos');
 
@@ -53,13 +53,13 @@
 }
 
 const store = async (req, res) => {
-    // check for validation errors
+    // Checking after errors before adding photo
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).send({ status : "fail", data: errors.array() });
     }
 
-    // get only the valid data from the request
+    // get valid data
     const validData = matchedData(req); 
 
     validData.user_id = req.user.user_id;
@@ -91,13 +91,15 @@ const store = async (req, res) => {
   const update = async (req, res) => {
     const photoId = req.params.photoId;
 
+    // fetch user with related photos
     const user = await models.User.fetchById(req.user.user_id, { withRelated: ['photos'] });
-    const userPhotos = user.related('photos');
-    const userPhoto = userPhotos.find(photo => photo.id == req.params.photoId);
+    
+    // find photo to update in user list
+    const userPhoto = user.related('photos').find(photo => photo.id == photoId);
 
-    // make sure user exists
-    const photo = await models.Photo.fetchById(req.params.photoId);
-    if (!photo || !userPhoto) {
+    // make sure photo exists
+    const photo = await models.Photo.fetchById(photoId);
+    if (!photo) {
         debug("Photo to update was not found. %o", { id: photoId });
         res.status(404).send({
             status: 'fail',
@@ -105,18 +107,26 @@ const store = async (req, res) => {
         });
         return;
     }
+    if(!userPhoto) {
+        debug("Photo to update does not belong to you. %o", { id: photoId });
+        res.status(403).send({
+            status:'fail',
+            data: 'You are not authorized for this action.'
+        });
+    }
 
-    // check for validation errors
+    // check after errors before updating photo
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).send({ status : "fail", data: errors.array() });
     }
 
-    // get only the valid data from the request
+    // get valid data
     const validData = matchedData(req); 
     validData.user_id = req.user.user_id;
 
     try {
+        // save updated photo data in photo table
         const updatedPhoto = await photo.save(validData);
         debug("Updated photo successfully: %O", updatedPhoto);
 

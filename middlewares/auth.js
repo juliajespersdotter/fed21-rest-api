@@ -4,12 +4,12 @@
 
 const debug = require('debug')('photo_album:auth');
 const jwt = require('jsonwebtoken');
+
+
 /**
  * Validate JWT token
  */
-
  const validateJwtToken = (req, res, next) => {
-    // make sure authorization header exists, otherwise fail
     if(!req.headers.authorization){
        debug('Authorization header missing');
 
@@ -20,7 +20,6 @@ const jwt = require('jsonwebtoken');
    }
 
    // Authorization: "Bearer xxxxxx.xxxxx.xxxx"
-   // split authorization header into "authSchema token"
    const [authSchema, token] = req.headers.authorization.split(' ');
    if(authSchema.toLowerCase() !== "bearer") {
        // not ours to authenticate
@@ -32,7 +31,6 @@ const jwt = require('jsonwebtoken');
        });
    }
 
-   // verify token (and extract payload)
    try {
        req.user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
        
@@ -43,7 +41,6 @@ const jwt = require('jsonwebtoken');
            });
    }
 
-   // pass request along
    next();
 }
 

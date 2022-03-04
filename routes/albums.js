@@ -16,7 +16,7 @@ router.post('/', albumValidationRules.createRules ,albumController.store);
 router.put('/:albumId', albumValidationRules.updateRules, albumController.update);
 
 /* Add multiple photos to album */
-// router.post('/:albumId/photos', albumController.addPhoto)
+router.post('/:albumId/photos', albumValidationRules.attachPhotosRules, albumController.attachPhotos)
 
 /* Delete an album */
 router.delete('/:albumId', albumController.destroy);
