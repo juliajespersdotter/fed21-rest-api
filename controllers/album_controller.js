@@ -197,7 +197,9 @@
     
 	try {
         // attach new relation between photo and album, insert into albums_photos table
-        await album.photos().attach(validData.photo_id);
+        validData.photo_id.forEach(id => {
+            album.photos().attach(id);    
+        });
 
         debug("Attached photo successfully: %O", res);
         res.send({
@@ -213,6 +215,66 @@
 		});
 		throw error;
 	}
+}
+
+
+/** 
+ * Delete photo from album
+ * 
+ * DELETE /:albumId/photos/:photoId
+ */
+
+const detachPhotos = async (req, res) => {
+    const albumId = req.params.albumId;
+    const photoId = req.params.photoId;
+
+    // fetch user with related albums
+	const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
+
+    // find the album in user list
+    const userAlbum = user.related('albums').find(album => album.id == albumId)
+
+    // make sure album with /:albumId exists
+    const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
+
+    // check specific album for the photo we want to add
+    const existing_photo = album.related('photos').find(photo => photo.id == photoId);
+
+    // if the photo is already in the album
+    if(!existing_photo) {
+        return res.send({
+            status: 'fail',
+            data: "Photo does not exist in album",
+        });
+    }
+
+    // if the album does not belong to the user
+    if(!userAlbum) {
+        debug("Album does not belong to user. %o", { id: albumId });
+        return res.status(403).send({
+            status:'fail',
+            data: 'You are not authorized for this action.'
+        });
+    }
+
+    try {
+        // attach new relation between photo and album, insert into albums_photos table
+        await album.photos().detach(photoId);
+
+        debug("Attached photo successfully: %O", res);
+        res.send({
+            status: 'success',
+            data:   
+                null,
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            status: 'error',
+            message: "Exception thrown when attempting to attach photo",
+        });
+        throw error;
+    }
 }
 
  
@@ -266,6 +328,7 @@
      store,
      update,
      attachPhotos,
+     detachPhotos,
      destroy,
  }
  

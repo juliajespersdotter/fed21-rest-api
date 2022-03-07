@@ -14,12 +14,21 @@ const models = require('../models');
  ];
 
  const attachPhotosRules = [
-    body('photo_id').exists().isInt().bail().custom(async value => {
-        const photo = await new models.Photo({ id : value }).fetch({ require: false });
-        if(!photo) {
-            return Promise.reject(`Photo with ID ${value} does not exist.`);
+    body('photo_id').exists().isArray({ min: 1 }).bail().custom(async value => {
+        if(!value.every(Number.isInteger)){
+            return Promise.reject(`Id must be a number.`);
         }
-        return Promise.resolve();
+
+        await Promise.all(value.map(async id => {
+            const photo = await new models.Photo({id : id}).fetch({ require: false });
+            
+            if(!photo){
+                return Promise.reject(`Photo with ID ${id} does not exist.`);
+            }
+            else{
+                return Promise.resolve();
+            }
+          }))
     })
 ]
  

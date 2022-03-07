@@ -1,4 +1,4 @@
-photo_controller 
+photo_controller 🤩
     GET /photos -- 🥳
     GET /photos/:photoId -- 🥳
     POST /photos 🥳
@@ -24,8 +24,8 @@ auth_controller 🤩
 
 profile_controller (?)
 
-Validation rules
+Validation rules 🤩
     Valid email must be an email, email must not already exist -- 🥳
     Valid url must be an url -- 🥳
-    Valid photo_id must be an int
+    Valid photo_id must be an int -- 🥳
 

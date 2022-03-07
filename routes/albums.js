@@ -18,10 +18,11 @@ router.put('/:albumId', albumValidationRules.updateRules, albumController.update
 /* Add multiple photos to album */
 router.post('/:albumId/photos', albumValidationRules.attachPhotosRules, albumController.attachPhotos)
 
+/* Delete a photo from an album */
+router.delete('/:albumId/photos/:photoId', albumController.detachPhotos);
+
 /* Delete an album */
 router.delete('/:albumId', albumController.destroy);
 
-/* Delete a photo from an album */
-// router.delete('/:albumId/photos/:photoId', albumController.destroyPhoto);
 
 module.exports = router;
