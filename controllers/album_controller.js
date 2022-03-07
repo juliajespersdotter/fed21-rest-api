@@ -43,6 +43,7 @@
             message: 'Album not found'
         });
     }
+
     // fetch album with related photos
     const thisAlbum = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
 
@@ -84,7 +85,7 @@
     } catch (error) {
         res.status(500).send({
             status: 'error',
-            message: 'Exception thrown when attempting to add a photo.'
+            message: 'Exception thrown when attempting to add album.'
         });
         throw error;
     
@@ -95,7 +96,7 @@
  /**
   * Update a specific resource
   *
-  * POST /:albumId
+  * PUT /:albumId
   */
  const update = async (req, res) => {
      const albumId = req.params.albumId;
@@ -104,20 +105,11 @@
      const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
 
     // find album with /:albumId in user albums
-     const userAlbum = user.related('albums').find(album => album.id == req.params.albumId);
+     const userAlbum = user.related('albums').find(album => album.id == albumId);
 
-     // make sure album exists
-     const album = await models.Album.fetchById(req.params.albumId);
+     // fetch album model
+     const album = await models.Album.fetchById(albumId);
 
-     // if album does not exist
-     if (!album) {
-         debug("Album to update was not found. %o", { id: albumId });
-         res.status(404).send({
-             status: 'fail',
-             data: 'Album Not Found',
-         });
-         return;
-     }
      // if album does not belong to user
      if(!userAlbum) {
          debug("Album to update does not belong to you. %o", { id: albumId });
@@ -167,6 +159,15 @@
  const attachPhotos = async (req, res) => {
     const albumId = req.params.albumId;
 
+	// fetch user with related albums
+	const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
+
+	// find the album in user list
+	const userAlbum = user.related('albums').find(album => album.id == albumId)
+
+    // make sure album with /:albumId exists
+    const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
+
     // Checking after errors before adding photo
 	const errors = validationResult(req);
 	if(!errors.isEmpty()){
@@ -174,27 +175,8 @@
 	}
 	const validData = matchedData(req); 
 
-	// fetch user with related albums
-	const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
-
-	// get the user's albums
-	const userAlbum = user.related('albums').find(album => album.id == albumId)
-
-    // make sure album with /:albumId exists
-    const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
-
     // check specific album for the photo we want to add
     const existing_photo = album.related('photos').find(photo => photo.id == validData.photo_id);
-
-    // if the album does not exist
-    if (!album) {
-        debug("Album to update was not found. %o", { id: albumId });
-        res.status(404).send({
-            status: 'fail',
-            data: 'Album Not Found',
-        });
-        return;
-    }
 
     // if the photo is already in the album
     if(existing_photo) {
@@ -206,19 +188,18 @@
 
     // if the album does not belong to the user
     if(!userAlbum) {
-        debug("Album to update does not belong to you. %o", { id: albumId });
-        res.status(403).send({
+        debug("Album to update does not belong to user. %o", { id: albumId });
+        return res.status(403).send({
             status:'fail',
             data: 'You are not authorized for this action.'
         });
-        return;
     }
     
 	try {
         // attach new relation between photo and album, insert into albums_photos table
         await album.photos().attach(validData.photo_id);
 
-        debug("Added photo successfully: %O", res);
+        debug("Attached photo successfully: %O", res);
         res.send({
             status: 'success',
             data:   
@@ -228,7 +209,7 @@
 	} catch (error) {
 		res.status(500).send({
 			status: 'error',
-			message: "Exception thrown when attempting to add photo",
+			message: "Exception thrown when attempting to attach photo",
 		});
 		throw error;
 	}
@@ -240,11 +221,43 @@
   *
   * DELETE /:albumId
   */
- const destroy = (req, res) => {
-     res.status(405).send({
-         status: 'fail',
-         message: 'Method Not Allowed.',
-     });
+ const destroy = async (req, res) => {
+    const albumId = req.params.albumId;
+
+    // fetch user with related albums
+	const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
+
+    // find the album in user list
+	const userAlbum = user.related('albums').find(album => album.id == albumId)
+
+    // make sure album with /:albumId exists
+    const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
+
+
+    if(!userAlbum) {
+        debug("Album to delete does not belong to user. %o", { id: albumId });
+        return res.status(403).send({
+            status:'fail',
+            data: 'You are not authorized for this action.'
+        });
+    }
+
+    try {
+        await album.photos().detach();
+        await new models.Album({id: albumId}).destroy()
+        debug("Deleted album successfully: %O", res);
+        res.send({
+            status: 'success',
+            data:   
+                null,
+        });
+    } catch (error) {
+        res.status(500).send({
+			status: 'error',
+			message: "Exception thrown when attempting to delete album",
+		});
+		throw error;
+    }
  }
  
  module.exports = {

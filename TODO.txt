@@ -3,7 +3,7 @@ photo_controller
     GET /photos/:photoId -- 🥳
     POST /photos 🥳
     PUT /photos/:photoId -- 🥳
-    DELETE /photos/:photoId
+    DELETE /photos/:photoId -- 🥳
 
 
 album_controller
@@ -13,7 +13,7 @@ album_controller
     PUT /albums/:albumId -- 🥳
     POST /albums/:albumId/photos (add 1 or multiple photos) -- 🥳 (1 photo posting finished)
     DELETE /albums/:albumId/photos/:photoId
-    DELETE /albums/:albumId
+    DELETE /albums/:albumId -- 🥳
 
 
 auth_controller 🤩
