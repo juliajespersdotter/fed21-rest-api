@@ -159,15 +159,6 @@
  const attachPhotos = async (req, res) => {
     const albumId = req.params.albumId;
 
-	// fetch user with related albums
-	const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
-
-	// find the album in user list
-	const userAlbum = user.related('albums').find(album => album.id == albumId)
-
-    // make sure album with /:albumId exists
-    const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
-
     // Checking after errors before adding photo
 	const errors = validationResult(req);
 	if(!errors.isEmpty()){
@@ -175,20 +166,38 @@
 	}
 	const validData = matchedData(req); 
 
-    // check specific album for the photo we want to add
-    const existing_photo = album.related('photos').find(photo => photo.id == validData.photo_id);
+	// fetch user with related albums
+	const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums', 'photos'] });
 
+	// find the album in user list
+	const userAlbum = user.related('albums').find(album => album.id == albumId);
+
+    // find the photo in user list
+    const userPhoto = user.related('photos').find(photo => photo.id == validData.photo_id);
+
+    // make sure album with /:albumId exists
+    const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
+
+    // check specific album for the photo we want to add
+    const existing_photo = validData.photo_id.every(id => {
+        const findPhoto = album.related('photos').find(photo => photo.id == id);
+
+        if (findPhoto){
+            return true;
+        }
+    })
+    
     // if the photo is already in the album
     if(existing_photo) {
-        return res.send({
-			status: 'fail',
-			data: "Photo already exists",
-		});
-	}
-
+        return res.status(400).send({
+            status: 'fail',
+            data: "Photo already exists",
+        });
+    }
+    
     // if the album does not belong to the user
-    if(!userAlbum) {
-        debug("Album to update does not belong to user. %o", { id: albumId });
+    if(!userAlbum || !userPhoto) {
+        debug("Album or photo to update does not belong to user. %o", { album_id: albumId, photo_id: validData.photo_id });
         return res.status(403).send({
             status:'fail',
             data: 'You are not authorized for this action.'
@@ -225,43 +234,53 @@
  */
 
 const detachPhotos = async (req, res) => {
-    const albumId = req.params.albumId;
-    const photoId = req.params.photoId;
+    
+   
+        const albumId = req.params.albumId;
+        const photoId = req.params.photoId;
+    
+        // fetch user with related albums
+        const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
+    
+        // find the album in user list
+        const userAlbum = user.related('albums').find(album => album.id == albumId)
+    
+        // make sure album with /:albumId exists
+        const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
+    
+        // check specific album for the photo we want to remove
+        const existing_photo = album.related('photos').find(photo => photo.id == photoId);
 
-    // fetch user with related albums
-	const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
-
-    // find the album in user list
-    const userAlbum = user.related('albums').find(album => album.id == albumId)
-
-    // make sure album with /:albumId exists
-    const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
-
-    // check specific album for the photo we want to add
-    const existing_photo = album.related('photos').find(photo => photo.id == photoId);
-
-    // if the photo is already in the album
-    if(!existing_photo) {
-        return res.send({
-            status: 'fail',
-            data: "Photo does not exist in album",
-        });
-    }
-
-    // if the album does not belong to the user
-    if(!userAlbum) {
-        debug("Album does not belong to user. %o", { id: albumId });
-        return res.status(403).send({
-            status:'fail',
-            data: 'You are not authorized for this action.'
-        });
-    }
-
+        // if album does not exist
+        if(!album) {
+            return res.status(403).send({
+                status: 'fail',
+                data: 'Album does not exist'
+            })
+        }
+    
+        // if the photo is already in the album
+        if(!existing_photo) {
+            return res.status(403).send({
+                status: 'fail',
+                data: "Photo does not exist in album",
+            });
+        }
+    
+        // if the album does not belong to the user
+        if(!userAlbum ) {
+            debug("Album does not belong to user. %o", { id: albumId });
+            return res.status(403).send({
+                status:'fail',
+                data: 'You are not authorized for this action.'
+            });
+        }
+        
     try {
-        // attach new relation between photo and album, insert into albums_photos table
+        // detach relation between photo and album
         await album.photos().detach(photoId);
 
-        debug("Attached photo successfully: %O", res);
+        debug("Removed photo successfully: %O", res);
         res.send({
             status: 'success',
             data:   
@@ -271,7 +290,7 @@ const detachPhotos = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             status: 'error',
-            message: "Exception thrown when attempting to attach photo",
+            message: "Exception thrown when attempting to remove photo from album",
         });
         throw error;
     }

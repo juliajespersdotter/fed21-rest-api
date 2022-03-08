@@ -24,7 +24,6 @@ router.use(auth.validateJwtToken);
 
 router.use('/albums', require('./albums'));
 router.use('/photos', require('./photos'));
-// router.use('/profile', auth.validateJwtToken, require('./profile')); // not needed?
 
 
 module.exports = router;

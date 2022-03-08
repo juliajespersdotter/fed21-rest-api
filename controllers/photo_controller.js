@@ -70,7 +70,7 @@ const store = async (req, res) => {
     validData.user_id = req.user.user_id;
 
     try {
-        // save new album in album table
+        // save new photo in photo table
         const photo = await new models.Photo(validData).save();
 
         debug('Created new photo successfully: %O', photo);

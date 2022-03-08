@@ -127,16 +127,10 @@ const register = async (req, res) => {
             expiresIn: process.env.ACCESS_TOKEN_LIFETIME || '1h',
         });
 
-        // sign and get refresh token
-        const refresh_token = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-            expiresIn: process.env.REFRESH_TOKEN_LIFETIME || '1w',
-        });
-
         return res.send ({
             status: 'success',
             data: {
                 access_token,
-                refresh_token
             }
         });
 
