@@ -178,12 +178,19 @@
     // check specific album for the photo we want to add
     const existing_photo = validData.photo_id.every(id => {
         const findPhoto = album.related('photos').find(photo => photo.id == id);
-        const userPhoto = user.related('photos').find(photo=> photo.id == id);
 
-        if (findPhoto && userPhoto){
+        if (findPhoto){
             return true;
         }
-    })
+    });
+
+    const isUserPhoto = validData.photo_id.every(id => {
+        const userPhoto = user.related('photos').find(photo=> photo.id == id);
+        
+        if (userPhoto){
+            return true;
+        }
+    });
     
     // if the photo is already in the album
     if(existing_photo) {
@@ -194,7 +201,7 @@
     }
     
     // if the album does not belong to the user
-    if(!userAlbum) {
+    if(!userAlbum || !isUserPhoto) {
         debug("Album or photo to update does not belong to user. %o", { album_id: albumId, photo_id: validData.photo_id });
         return res.status(403).send({
             status:'fail',
