@@ -172,17 +172,15 @@
 	// find the album in user list
 	const userAlbum = user.related('albums').find(album => album.id == albumId);
 
-    // find the photo in user list
-    const userPhoto = user.related('photos').find(photo => photo.id == validData.photo_id);
-
     // make sure album with /:albumId exists
     const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
 
     // check specific album for the photo we want to add
     const existing_photo = validData.photo_id.every(id => {
         const findPhoto = album.related('photos').find(photo => photo.id == id);
+        const userPhoto = user.related('photos').find(photo=> photo.id == id);
 
-        if (findPhoto){
+        if (findPhoto && userPhoto){
             return true;
         }
     })
@@ -196,7 +194,7 @@
     }
     
     // if the album does not belong to the user
-    if(!userAlbum || !userPhoto) {
+    if(!userAlbum) {
         debug("Album or photo to update does not belong to user. %o", { album_id: albumId, photo_id: validData.photo_id });
         return res.status(403).send({
             status:'fail',
