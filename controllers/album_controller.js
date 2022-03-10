@@ -29,7 +29,7 @@
   * GET /:albumId
   */
  const show = async (req, res) => {
-     const albumId = req.params.albumId
+    const albumId = req.params.albumId;
 
      // fetch user with related albums
     const user = await models.User.fetchById(req.user.user_id, { withRelated: ['albums'] });
@@ -40,7 +40,7 @@
     if(!album){
         return res.status(404).send({
             status: 'fail',
-            message: 'Album not found'
+            message: 'Album not found in database.'
         });
     }
 
@@ -115,18 +115,18 @@
          debug("Album to update does not belong to you. %o", { id: albumId });
          res.status(403).send({
              status:'fail',
-             data: 'You are not authorized for this action.'
+             data: 'Album does not belong to user.'
          });
          return;
      }
  
-     // if everything is ok, check for validation errors
+     // if everything is ok, check validation
      const errors = validationResult(req);
      if(!errors.isEmpty()){
          return res.status(422).send({ status : "fail", data: errors.array() });
      }
  
-     // get valid data
+     // get valid data, set user_id to the req.user id
      const validData = matchedData(req); 
      validData.user_id = req.user.user_id;
  
@@ -175,7 +175,7 @@
     // make sure album with /:albumId exists
     const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
 
-    // check specific album for the photo we want to add
+    // check specific album for the photos we want to add
     const existing_photo = validData.photo_id.every(id => {
         const findPhoto = album.related('photos').find(photo => photo.id == id);
 
@@ -184,6 +184,7 @@
         }
     });
 
+    // check if the photos are the users 
     const isUserPhoto = validData.photo_id.every(id => {
         const userPhoto = user.related('photos').find(photo=> photo.id == id);
         
@@ -205,7 +206,7 @@
         debug("Album or photo to update does not belong to user. %o", { album_id: albumId, photo_id: validData.photo_id });
         return res.status(403).send({
             status:'fail',
-            data: 'You are not authorized for this action.'
+            data: 'Album or photo does not belong to user.'
         });
     }
     
@@ -239,8 +240,6 @@
  */
 
 const detachPhotos = async (req, res) => {
-    
-   
         const albumId = req.params.albumId;
         const photoId = req.params.photoId;
     
@@ -255,18 +254,10 @@ const detachPhotos = async (req, res) => {
     
         // check specific album for the photo we want to remove
         const existing_photo = album.related('photos').find(photo => photo.id == photoId);
-
-        // if album does not exist
-        if(!album) {
-            return res.status(403).send({
-                status: 'fail',
-                data: 'Album does not exist'
-            })
-        }
     
         // if the photo is already in the album
         if(!existing_photo) {
-            return res.status(403).send({
+            return res.status(404).send({
                 status: 'fail',
                 data: "Photo does not exist in album",
             });
@@ -277,7 +268,7 @@ const detachPhotos = async (req, res) => {
             debug("Album does not belong to user. %o", { id: albumId });
             return res.status(403).send({
                 status:'fail',
-                data: 'You are not authorized for this action.'
+                data: 'Album does not belong to user.'
             });
         }
         
@@ -319,19 +310,19 @@ const detachPhotos = async (req, res) => {
     // make sure album with /:albumId exists
     const album = await models.Album.fetchById(albumId, { withRelated: ['photos'] });
 
-
     if(!userAlbum) {
         debug("Album to delete does not belong to user. %o", { id: albumId });
         return res.status(403).send({
             status:'fail',
-            data: 'You are not authorized for this action.'
+            data: 'Album does not belong to user.'
         });
     }
 
     try {
         await album.photos().detach();
         await new models.Album({id: albumId}).destroy()
-        debug("Deleted album successfully: %O", res);
+
+        debug("Deleted album successfully: %O", {id: albumId});
         res.send({
             status: 'success',
             data:   

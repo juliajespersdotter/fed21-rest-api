@@ -1,0 +1,621 @@
+{
+	"info": {
+		"_postman_id": "537b230a-825d-446c-94de-af16667515d8",
+		"name": "heroku photo_album",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "albums",
+			"item": [
+				{
+					"name": "GET /albums",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ0ODAsImV4cCI6MTY0NjgyODg4MH0.OlZ_xRriwBjYillTiRGkMc0LqbuxcdbjAzq7FdOo9ug",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/albums",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"albums"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /albums/albumId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ5MTgsImV4cCI6MTY0NjgyOTMxOH0.Vu0NX-JXIs4qsRqYe92huKAmIz18tYUwdEHnEUvSrKw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/albums/31",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"albums",
+								"31"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /albums/albumId/photos/photoId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ5MTgsImV4cCI6MTY0NjgyOTMxOH0.Vu0NX-JXIs4qsRqYe92huKAmIz18tYUwdEHnEUvSrKw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/albums/31/photos/31",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"albums",
+								"31",
+								"photos",
+								"31"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /albums/albumId/photos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ5MTgsImV4cCI6MTY0NjgyOTMxOH0.Vu0NX-JXIs4qsRqYe92huKAmIz18tYUwdEHnEUvSrKw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"photo_id\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/albums/31/photos",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"albums",
+								"31",
+								"photos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /albums",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/albums",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"albums"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /albums/albumId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ0ODAsImV4cCI6MTY0NjgyODg4MH0.OlZ_xRriwBjYillTiRGkMc0LqbuxcdbjAzq7FdOo9ug",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/albums/31",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"albums",
+								"31"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /albums/albumId",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/albums/4",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"albums",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJ1c2VyX2lkIjoyLCJuYW1lIjoiSnVsaWEuSmVzcGVyc2RvdHRlciIsImlhdCI6MTY0Njc3ODEyMCwiZXhwIjoxNjQ2NzkyNTIwfQ.BzLB_gdQsH_b7ZKoblOg6H9hG0pFN9OViXiIGnjnr60",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "POST /login",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"\",\n    \"password\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/login",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /refresh",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/refresh",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"\",\n    \"first_name\": \"\",\n    \"last_name\": \"\",\n    \"password\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/register",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJ1c2VyX2lkIjoyLCJuYW1lIjoiSnVsaWEuSmVzcGVyc2RvdHRlciIsImlhdCI6MTY0NjMxOTg2OCwiZXhwIjoxNjQ2MzI3MDY4fQ.VBH-l2SrKtKzHcLa7kJ-b6UPflH_aSV5UvGNKAeK2iI",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "photos",
+			"item": [
+				{
+					"name": "GET /photos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ0ODAsImV4cCI6MTY0NjgyODg4MH0.OlZ_xRriwBjYillTiRGkMc0LqbuxcdbjAzq7FdOo9ug",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/photos",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"photos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /photos/photoId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/photos/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"photos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /photos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ0ODAsImV4cCI6MTY0NjgyODg4MH0.OlZ_xRriwBjYillTiRGkMc0LqbuxcdbjAzq7FdOo9ug",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"\",\n    \"url\": \"\",\n    \"comment\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/photos",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"photos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /photos/photoId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ0ODAsImV4cCI6MTY0NjgyODg4MH0.OlZ_xRriwBjYillTiRGkMc0LqbuxcdbjAzq7FdOo9ug",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"\",\n    \"url\": \"\",\n    \"comment\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/photos/11",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"photos",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /photos/photoId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoZXJva3VAZW1haWwuY29tIiwidXNlcl9pZCI6MTEsIm5hbWUiOiJHaWxiZXJ0Lkh1bmQiLCJpYXQiOjE2NDY4MTQ0ODAsImV4cCI6MTY0NjgyODg4MH0.OlZ_xRriwBjYillTiRGkMc0LqbuxcdbjAzq7FdOo9ug",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/photos/21",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"photos",
+								"21"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJ1c2VyX2lkIjoyLCJuYW1lIjoiSnVsaWEuSmVzcGVyc2RvdHRlciIsImlhdCI6MTY0Njc3ODEyMCwiZXhwIjoxNjQ2NzkyNTIwfQ.BzLB_gdQsH_b7ZKoblOg6H9hG0pFN9OViXiIGnjnr60",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "GET /",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJ1c2VyX2lkIjoyLCJuYW1lIjoiSnVsaWEuSmVzcGVyc2RvdHRlciIsImlhdCI6MTY0NjM5NjQ5NCwiZXhwIjoxNjQ2NDEwODk0fQ.mDF-BcNaekYi0KHGmzAoFAJ1d67exPipUWx3peIkrk8",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

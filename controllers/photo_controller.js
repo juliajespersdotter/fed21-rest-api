@@ -38,9 +38,9 @@
 
    if (!userPhoto) {
         debug("Photo to show does not belong to user. %o", { id: photoId });
-        return res.status(404).send({
+        return res.status(403).send({
             status: 'fail',
-            data: 'You are not authorized for this action.',
+            data: 'Photo does not belong to user.',
         });
     }
 
@@ -110,9 +110,9 @@ const store = async (req, res) => {
     // if photo does not belong to user
     if (!userPhoto) {
         debug("Photo to update does not belong to user. %o", { id: photoId });
-        return res.status(404).send({
+        return res.status(403).send({
             status: 'fail',
-            data: 'You are not authorized for this action.',
+            data: 'Photo does not belong to user.',
         });
     }
 
@@ -168,7 +168,7 @@ const destroy = async (req, res) => {
         debug("Photo to delete does not belong to user. %o", { id: photoId });
         return res.status(403).send({
             status:'fail',
-            data: 'You are not authorized for this action.'
+            data: 'Photo does not belong to user.'
         });
     }
 

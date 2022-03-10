@@ -2,7 +2,7 @@
  * Auth Controller
  */
 
-const debug = require('debug')('photo_album:profile_controller');
+const debug = require('debug')('photo_album:auth_controller');
 const models = require('../models');
 const {matchedData, validationResult} = require('express-validator');
 const bcrypt = require('bcrypt');

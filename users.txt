@@ -1,7 +1,0 @@
-    "email": "unknown@email.com",
-    "password": "passpass"
-    id: 3
-
-    "email": "email@email.com"
-    "password": "examplepass"
-    id: 2
