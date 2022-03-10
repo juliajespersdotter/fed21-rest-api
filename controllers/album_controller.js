@@ -17,9 +17,8 @@
 
     res.status(200).send({
         status: 'success',
-        data: {
-            albums: user.related('albums'),
-        }
+        data: 
+            user.related('albums'),
     });
  }
  

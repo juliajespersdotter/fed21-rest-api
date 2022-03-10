@@ -6,13 +6,13 @@
 
  const createRules = [
      body('title').exists().isLength( { min: 3 }).trim(),
-     body('url').exists().isURL().isLength({ min: 2 }).trim(),
+     body('url').exists().isURL().trim(),
      body('comment').exists().isLength({ min: 3 }).trim(),
  ];
  
  const updateRules = [
      body('title').optional().isLength({ min: 3 }).trim(),
-     body('url').optional().isURL().isLength({ min: 2 }).trim(),
+     body('url').optional().isURL().trim(),
      body('comment').optional().isLength({ min: 3}).trim(),
  ];
  
