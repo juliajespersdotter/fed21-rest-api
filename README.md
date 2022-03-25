@@ -16,7 +16,11 @@ https://boiling-island-84344.herokuapp.com/
 
 - [Assignment](#assignment)
 - [Tools](#tools)
-- [API](#api)
+- [Routes](#routes)
+- [Using the API](#using-the-api)
+- [Authentication](#authentication)
+- [Photos Endpoint](#photos-endpoints)
+- [Albums Endpoint](#albums-endpoints)
 
 ## Assignment
 
@@ -36,7 +40,7 @@ https://boiling-island-84344.herokuapp.com/
 
 #### The API has the following endpoints
 
-# Route Map
+# Routes
 
 ## Albums
 
@@ -73,11 +77,17 @@ https://boiling-island-84344.herokuapp.com/
 
 ------
 
-## API
-### Use the heroku link in Postman to make requests and allow a few seconds for the heroku app to wake up.
+## Using the API
+### Use the Heroku link in Postman to make requests and allow a few seconds for the Heroku app to wake up.
 ### Ex: https://boiling-island-84344.herokuapp.com/register
-### A JWT token is required as authentication to access other endpoints, this will be included in response after registration and has a limited lifetime.
+- Register a new user using the `POST /register` endpoint.
+- After successful registration, login using the `POST /login` endpoint.
+- Included in the response is a JWT access token and refresh token. The access token is used to access the other endpoints, ensuring you will only access     your own data. The refresh token is used in the `POST /refresh` endpoint to receive a new access token after it expires.
+- After successfully receiving a token you may access the other endpoints and begin storing your albums and photos in the database.
 
+------
+
+# Authentication
 
 ## `POST /register`
 
@@ -117,6 +127,8 @@ Register a new user.
   }
 }
 ```
+
+------
 
 ## `POST /login`
 
@@ -184,9 +196,8 @@ Get a new access token.
 ```
 
 ------
-------
 
-# Photos
+# Photos Endpoints
 
 ## `GET /photos`
 
@@ -371,9 +382,8 @@ Delete a photo (incl. the **links** to any albums, but not the albums themselves
 ```
 
 ------
-------
 
-# Albums
+# Albums Endpoints
 
 ## `GET /albums`
 
